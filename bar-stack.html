@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" style="height: 100%">
+<head>
+  <meta charset="utf-8">
+</head>
+<body style="height: 100%; margin: 0">
+  <div id="container" style="height: 100%"></div>
+
+
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js"></script>
+  <!-- Uncomment this line if you want to dataTool extension
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.1/dist/extension/dataTool.min.js"></script>
+  -->
+  <!-- Uncomment this line if you want to use gl extension
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts-gl@2/dist/echarts-gl.min.js"></script>
+  -->
+  <!-- Uncomment this line if you want to echarts-stat extension
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts-stat@latest/dist/ecStat.min.js"></script>
+  -->
+  <!-- Uncomment this line if you want to use map
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@4.9.0/map/js/china.js"></script>
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@4.9.0/map/js/world.js"></script>
+  -->
+  <!-- Uncomment these two lines if you want to use bmap extension
+  <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=YOUR_API_KEY"></script>
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.1/dist/extension/bmap.min.js"></script>
+  -->
+
+  <script type="text/javascript">
+    var dom = document.getElementById('container');
+    var myChart = echarts.init(dom, null, {
+      renderer: 'canvas',
+      useDirtyRect: false
+    });
+    var app = {};
+
+    var option = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        }
+      },
+      legend: {},
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: [
+        {
+          type: 'category',
+          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        }
+      ],
+      yAxis: [
+        {
+          type: 'value'
+        }
+      ],
+      series: [
+        {
+          name: 'Email',
+          type: 'bar',
+          stack: 'Ad',
+          emphasis: {
+            focus: 'series'
+          },
+          data: [120, 132, 101, 134, 90, 230, 210],
+          label: {
+            show: false,
+             position: 'top'
+          }
+        },
+        {
+          name: 'Union Ads',
+          type: 'bar',
+          stack: 'Ad',
+          emphasis: {
+            focus: 'series'
+          },
+          data: [220, 182, 191, 234, 290, 330, 310],
+          label: {
+            show: false,
+             position: 'top'
+          }
+        },
+        {
+          name: 'Video Ads',
+          type: 'bar',
+          stack: 'Ad',
+          emphasis: {
+            focus: 'series'
+          },
+          data: [150, 232, 201, 154, 190, 330, 410],
+           label: {
+            show: true,
+             position: 'top'
+          }
+        }
+      ]
+    };
+    if (option && typeof option === 'object') {
+      myChart.setOption(option);
+    }
+    myChart.on('legendselectchanged', function(params) {
+      // 控制台打印数据的名称
+      console.log('params', params);
+
+      const getSeries = (series, params)=>{
+        let _series = series.map(serie=>{
+          serie.label.show = false;
+          // serie.label.color = 'rgba(0, 0, 0, 1)';
+          return serie;
+        })
+
+        let length = _series.length
+        do{
+          let name = _series[length - 1].name
+          if(params.selected[name]){
+            _series[length - 1].label.show = true;
+            break;
+          }
+          length -= 1;
+        } while(length);
+
+        return _series;
+      }
+
+    let series = getSeries(option?.series, params)
+
+    console.log('legendselectchanged option series', {...option, series});
+      myChart.setOption({...option, series}, false)
+    });
+
+
+
+    window.addEventListener('resize', myChart.resize);
+  </script>
+</body>
+</html>
